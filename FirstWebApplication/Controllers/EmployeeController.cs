@@ -1,9 +1,13 @@
-﻿using FirstWebApplication.Models;
-
+﻿
+using FirstWebApplication.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FirstWebApplication.Controllers
+
+
+
+
+namespace FirstWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -14,47 +18,83 @@ namespace FirstWebApplication.Controllers
         {
             _repositoryEmployee = repository;
         }
-        [HttpGet("/GetAllEmployees")]
+        [HttpGet]
         // GET: EmployeeController
+        public List<Employee> GetEmployees()
+        {
+            List<Employee> employees = _repositoryEmployee.GetAllEmployees();
+            return employees;
+        }
+        [HttpGet("/GetAllEmployees")]
         public IEnumerable<EmpViewModel> GetAllEmployees()
         {
             List<Employee> employees = _repositoryEmployee.GetAllEmployees();
-            var emplist = (from emp in employees
-                           select new EmpViewModel()
-                           {
-                               EmpId = emp.EmployeeId,
-                               FirstName = emp.FirstName,
-                               LastName = emp.LastName,
-                               BirthDate = (DateTime)emp.BirthDate,
-                               HireDate = (DateTime)emp.HireDate,
-                               Title = emp.Title,
-                               City = emp.City,
-                               ReportsTo = (int)emp.ReportsTo
-                           }
-                           ).ToList();
-
-            return emplist;
+            var empList = (
+                from emp in employees
+                select new EmpViewModel()
+                {
+                    EmpID = emp.EmployeeId,
+                    FirstName = emp.FirstName,
+                    LastName = emp.LastName,
+                    BirthDate = emp.BirthDate,
+                    HireDate = emp.HireDate,
+                    Title = emp.Title,
+                    City = emp.City,
+                    ReportsTo = emp.ReportsTo
+                }
+                ).ToList();
+            return empList;
         }
         [HttpPost]
         public Employee EmployeeDetails(int id)
         {
+            //Customer customer = _repositoryCustomers.FindCustomerById(id);
+            //return View(customer);
             Employee employees = _repositoryEmployee.GetEmployeeId(id);
             return employees;
         }
-        [HttpPut]
-        public Employee EditEmployee(int id, [FromBody] Employee updatedEmployee)
+        [HttpPost("/AddNewEmployee")]
+        public int AddNewEmployee([FromBody] Employee employee)
         {
-            updatedEmployee.EmployeeId = id;
-            Employee savedEmployee = _repositoryEmployee.UpdateEmployee(updatedEmployee);
-            return savedEmployee;
+            _repositoryEmployee.AddNewEmployee(employee);
+            return 1;
         }
-        [HttpDelete]
-      
-            public Employee Delete(int id, [FromBody] Employee deleteEmployeeData)
+        [HttpPut("/EditEmployee")]
+        public void EditEmployee([FromBody] EmpViewModel updatedEmployee)
+        {
+            Employee employee = new Employee()
             {
-                deleteEmployeeData.EmployeeId = id;
-                Employee savedEmployee = _repositoryEmployee.DeleteEmployee(deleteEmployeeData);
-                return savedEmployee;
-            }
+                EmployeeId = updatedEmployee.EmpID,
+                FirstName = updatedEmployee.FirstName,
+                LastName = updatedEmployee.LastName,
+                BirthDate = updatedEmployee.BirthDate,
+                HireDate = updatedEmployee.HireDate,
+                City = updatedEmployee.City,
+                ReportsTo = updatedEmployee.ReportsTo,
+                Title = updatedEmployee.Title
+            };
+
+
+
+
+
+            _repositoryEmployee.UpdateEmployee(employee);
         }
+
+
+
+        [HttpDelete("/DeleteEmployee")]
+        public int DeleteEmployee(int id)
+        {
+            _repositoryEmployee.DeleteEmployee(id);
+            return 1;
+        }
+
+
+
+
+
+
+
     }
+}
