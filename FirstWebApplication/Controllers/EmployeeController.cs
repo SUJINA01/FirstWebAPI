@@ -33,7 +33,7 @@ namespace FirstWebAPI.Controllers
                 from emp in employees
                 select new EmpViewModel()
                 {
-                    EmpID = emp.EmployeeId,
+                    EmpId = emp.EmployeeId,
                     FirstName = emp.FirstName,
                     LastName = emp.LastName,
                     BirthDate = emp.BirthDate,
@@ -64,7 +64,7 @@ namespace FirstWebAPI.Controllers
         {
             Employee employee = new Employee()
             {
-                EmployeeId = updatedEmployee.EmpID,
+                EmployeeId = updatedEmployee.EmpId,
                 FirstName = updatedEmployee.FirstName,
                 LastName = updatedEmployee.LastName,
                 BirthDate = updatedEmployee.BirthDate,

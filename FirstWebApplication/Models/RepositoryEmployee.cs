@@ -65,7 +65,7 @@ namespace FirstWebApplication.Models
 
         //}
 
-        public int UpadateEmployee(Employee modifiedEmployee)
+        public int UpdateEmployee(Employee modifiedEmployee)
 
         {
 
